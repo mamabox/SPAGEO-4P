@@ -1,15 +1,19 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;  //used for from - in - select syntax
 
 public class IntersectionManager : MonoBehaviour
 {
     public GameObject intersectionPrefab;
     private GameManager gameManager;
+    public string enteredFrom; // Cardinal direction from which the last intersection was entered
 
     //public List<string> validCoord = new List<string>();
 
     // Start is called before the first frame update
+
+    [ContextMenu("Intersection Manager")] //To debug without needing to play
     void Start()
     {
         gameManager = FindObjectOfType<GameManager>().GetComponent<GameManager>();
@@ -23,6 +27,7 @@ public class IntersectionManager : MonoBehaviour
 
     }
 
+   
     void GenerateIntersections()
     {
         // Y = -4 to -1
@@ -57,6 +62,10 @@ public class IntersectionManager : MonoBehaviour
             }
         }
 
+        // OPTION 2 - Debug array in one line
+        Debug.Log(string.Join(", ", from coord in gameManager.validCoord select coord)); //could use coord.attribtre
+
+        ////OPTION 1 - Debug with one item per list
         //foreach (string coord in gameManager.validCoord)
         //{
         //    Debug.Log(coord);

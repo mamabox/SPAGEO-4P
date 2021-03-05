@@ -4,6 +4,7 @@ using UnityEngine;
 //using UnityEngine.InputSystem;
 using System.IO;
 //using UnityEngine.InputSystem.Utilities;
+using System.Linq;
 
 /**
  * SIMPLE PLAYER CONTROLLER
@@ -35,6 +36,8 @@ public class PlayerController : MonoBehaviour
     public Vector3 startPosition; //Used to reset to initial position
     public Vector3 startRotation; //User to reset to initial rotatin
     public Vector2 inputVec;
+    public float[] startCoord;
+    public float[] lastIntersection ; //coordinate of the last intersection the player went through
 
     public Vector3 currentRotation; //Player's current rotation
     private Vector3 moveVec;
@@ -43,12 +46,13 @@ public class PlayerController : MonoBehaviour
     public float verticalInput; //Value of vertical input
 
     public bool tookStep = false;
+    private bool firstIntersectionExit = false;
 
     private void Awake()
     {
         // _controls = new PlayerControl();
     }
-
+    [ContextMenu ("PlayerController")]
     // Start is called before the first frame update
     void Start()
     {
@@ -64,8 +68,14 @@ public class PlayerController : MonoBehaviour
 
         currentRotation = startRotation;
 
-        //setSavePaths(); //Set the saving paths for screenshots and player movements
+        //lastCoord = (transform.position.x / gameManager.blockSize).ToString("F2");
+        startCoord = new float[] { (transform.position.x / gameManager.blockSize), (transform.position.z / gameManager.blockSize)};
+        lastIntersection = startCoord;
+        
     }
+
+        //setSavePaths(); //Set the saving paths for screenshots and player movements
+    
 
     // Update is called once per frame
     void FixedUpdate()
@@ -219,10 +229,21 @@ public class PlayerController : MonoBehaviour
     //    }
     //}
 
-    private void OnTriggerEnter(Collider other)
+    private void OnTriggerEnter(Collider other) // When player enters an intersection
     {
-        Debug.Log("Player has entered intersection (" + other.GetComponent<IntersectionTracker>().coordString + ")");
-        //calculate direction
+        if (firstIntersectionExit)  // if the player did not start in an intersection
+        {
+            Debug.Log("Player has entered intersection (" + other.GetComponent<Intersection>().coordString + ")");
+            calculateDirection(lastIntersection, other.GetComponent<Intersection>().coordinates);   //calculate the direction between the last intersection the one juste entered
+        }
+
+    }
+
+    private void OnTriggerExit(Collider other)  // When player leaves an intersection
+    {
+        Debug.Log("Player has left intersection (" + other.GetComponent<Intersection>().coordString + ")");
+        lastIntersection = other.GetComponent<Intersection>().coordinates;  // the intersection left becomes the last intersection
+        firstIntersectionExit = true;   // first time the player exits an intersection
     }
 
     public void setSavePaths()
@@ -286,6 +307,39 @@ public class PlayerController : MonoBehaviour
 
     {
         transform.position = new Vector3(posX * gameManager.blockSize, 1, posY * gameManager.blockSize);
+    }
+
+    public void calculateDirection(float[] lastIntersection, float[] thisIntersection)
+    {
+        Debug.Log("Last intersection: " + string.Join(", ", from coord in lastIntersection select coord));
+        Debug.Log("This intersection: " + string.Join(", ", from coord in thisIntersection select coord));
+
+        if (lastIntersection != thisIntersection) //if the the last intersection is not the same as this one
+        {
+            if ((lastIntersection[0] - thisIntersection[0]) > 0)
+            {
+                Debug.Log("West");
+            }
+            else if (((lastIntersection[0] - thisIntersection[0]) < 0))
+            {
+                Debug.Log("East");
+            }
+            else if ((lastIntersection[1] - thisIntersection[1]) > 0)
+            {
+                Debug.Log("South");
+            }
+            else
+            {
+                Debug.Log("North");
+            }
+        }
+        else
+        {
+            Debug.Log("Same intersecion");
+        }
+
+
+
     }
 
     public void GotoCoordinates()
