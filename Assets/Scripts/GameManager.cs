@@ -39,7 +39,6 @@ public class GameManager : MonoBehaviour
     {
         player = GameObject.FindGameObjectWithTag("Player");
         canvas.enabled = false;
-        buildCoordArray();
 
     }
 
@@ -48,7 +47,7 @@ public class GameManager : MonoBehaviour
     {
         //UI updates
         backwardsForceText.text = "Backwards Force (I & O) = " + player.GetComponent<PlayerController>().backwardsStepForce;
-        positionText.text = "POS (X,Z) = " + player.transform.position.x.ToString("F2") + "," + player.transform.position.z.ToString("F2") + ")";
+        positionText.text = "POS (X,Z) = (" + player.transform.position.x.ToString("F2") + "," + player.transform.position.z.ToString("F2") + ")";
         rotationText.text = "ROT (Y) = " + player.transform.rotation.eulerAngles.y.ToString("F2"); //display rotation in euler angles with two digits
     }
 
@@ -92,49 +91,55 @@ public class GameManager : MonoBehaviour
         return coordValid;
     }
 
-    public void buildCoordArray()
-    {
-        // Y = -4 to -1
-        for (int i = 4; i <= 11; i++)
-        {
-            for (int j = -4; j <= -1; j++)
-            {
-                //Debug.Log(i + "." + j);
-                validCoord.Add(i + "." + j);
-            }
-        }
+    //public void buildCoordArray()
+    //{
+    //    // Y = -4 to -1
+    //    for (int i = 4; i <= 11; i++)
+    //    {
+    //        for (int j = -4; j <= -1; j++)
+    //        {
+    //            //Debug.Log(i + "." + j);
+    //            validCoord.Add(i + "." + j);
+    //        }
+    //    }
 
-        // Y = 0 to 3
-        for (int i = 0; i <= 11; i++)
-        {
-            for (int j = 0; j <= 3; j++)
-            {
-                //Debug.Log(i + "." + j);
-                validCoord.Add(i + "." + j);
-            }
-        }
-        // Y = 4 to 7
-        for (int i = 0; i <= 7; i++)
-        {
-            for (int j = 4; j <= 7; j++)
-            {
-                //Debug.Log(i + "." + j);
-                validCoord.Add(i + "." + j);
-            }
-        }
+    //    // Y = 0 to 3
+    //    for (int i = 0; i <= 11; i++)
+    //    {
+    //        for (int j = 0; j <= 3; j++)
+    //        {
+    //            //Debug.Log(i + "." + j);
+    //            validCoord.Add(i + "." + j);
+    //        }
+    //    }
+    //    // Y = 4 to 7
+    //    for (int i = 0; i <= 7; i++)
+    //    {
+    //        for (int j = 4; j <= 7; j++)
+    //        {
+    //            //Debug.Log(i + "." + j);
+    //            validCoord.Add(i + "." + j);
+    //        }
+    //    }
 
-      
-        //foreach (string coord in validCoord)
-        //{
-        //    Debug.Log(coord);
-        //}
-       
-    }
+
+    //    //foreach (string coord in validCoord)
+    //    //{
+    //    //    Debug.Log(coord);
+    //    //}
+
+    //}
 
     public void inputFieldActive(bool setting)
     {
         Debug.Log("DisableKeyboardShortucts = " + setting);
         keyboardShortcutsEnabled = !setting;
     }
+
+    public void RestartSession()
+    {
+        Debug.Log("Restart the session");
+    }
+
 
 }

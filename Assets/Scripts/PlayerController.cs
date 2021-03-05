@@ -102,6 +102,18 @@ public class PlayerController : MonoBehaviour
 
             }
 
+            //Restart session
+            if (Input.GetKeyDown(KeyCode.R))
+            {
+                gameManager.RestartSession();
+            }
+
+            //Close game
+            if (Input.GetKeyDown(KeyCode.Escape))
+            {
+                Application.Quit();
+            }
+
             //Change the backwards force
             if (Input.GetKeyDown(KeyCode.I) && (backwardsStepForce > 300))
             {
@@ -153,7 +165,7 @@ public class PlayerController : MonoBehaviour
             }
         }
 
-        
+     
 
         //Take screenshots
         if (Input.GetKeyDown(KeyCode.Space))
@@ -206,6 +218,12 @@ public class PlayerController : MonoBehaviour
     //        backwardsStepForce -= 10;
     //    }
     //}
+
+    private void OnTriggerEnter(Collider other)
+    {
+        Debug.Log("Player has entered intersection (" + other.GetComponent<IntersectionTracker>().coordString + ")");
+        //calculate direction
+    }
 
     public void setSavePaths()
     {
