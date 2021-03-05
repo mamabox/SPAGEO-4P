@@ -13,6 +13,7 @@ public class GameManager : MonoBehaviour
 
     // UI Elements
     public TextMeshProUGUI backwardsForceText;
+    public TextMeshProUGUI cardinalDirection;
     public TextMeshProUGUI positionText;
     public TextMeshProUGUI rotationText;
 

@@ -38,6 +38,7 @@ public class PlayerController : MonoBehaviour
     public Vector2 inputVec;
     public float[] startCoord;
     public float[] lastIntersection ; //coordinate of the last intersection the player went through
+    public string cardinalDirection;
 
     public Vector3 currentRotation; //Player's current rotation
     private Vector3 moveVec;
@@ -318,21 +319,28 @@ public class PlayerController : MonoBehaviour
         {
             if ((lastIntersection[0] - thisIntersection[0]) > 0)
             {
-                Debug.Log("West");
+                cardinalDirection = "west";
+                //Debug.Log("West");
             }
             else if (((lastIntersection[0] - thisIntersection[0]) < 0))
             {
-                Debug.Log("East");
+                cardinalDirection = "east";
+                //Debug.Log("East");
             }
             else if ((lastIntersection[1] - thisIntersection[1]) > 0)
             {
-                Debug.Log("South");
+                cardinalDirection = "south";
+                //Debug.Log("South");
             }
             else
             {
-                Debug.Log("North");
+                cardinalDirection = "north";
+                //Debug.Log("North");
             }
+            Debug.Log(cardinalDirection);
+            gameManager.cardinalDirection.text = "Went " + cardinalDirection + " from (" + string.Join(",", from coord in lastIntersection select coord) + ") to ("+ string.Join(",", from coord in thisIntersection select coord) + ")";
         }
+        
         else
         {
             Debug.Log("Same intersecion");
