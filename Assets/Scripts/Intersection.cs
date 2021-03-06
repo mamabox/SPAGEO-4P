@@ -16,7 +16,7 @@ public class Intersection : MonoBehaviour
         gameManager = FindObjectOfType<GameManager>().GetComponent<GameManager>();
         coordinates[0] = (transform.position.x / gameManager.blockSize);
         coordinates[1] = (transform.position.z / gameManager.blockSize);
-        coordString = coordinates[0] + "." + coordinates[1];
+        coordString = coordinates[0] + "," + coordinates[1];
     }
 
     // Update is called once per frame
