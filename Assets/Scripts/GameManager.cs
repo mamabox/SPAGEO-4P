@@ -39,7 +39,7 @@ public class GameManager : MonoBehaviour
     void Start()
     {
         player = GameObject.FindGameObjectWithTag("Player");
-        canvas.enabled = false;
+        canvas.enabled = true;
 
     }
 

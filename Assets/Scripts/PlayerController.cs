@@ -5,6 +5,8 @@ using UnityEngine;
 using System.IO;
 //using UnityEngine.InputSystem.Utilities;
 using System.Linq;
+using UnityEngine.SceneManagement; // for restart scene
+using System; //for Math.Round
 
 /**
  * SIMPLE PLAYER CONTROLLER
@@ -47,7 +49,8 @@ public class PlayerController : MonoBehaviour
     public float verticalInput; //Value of vertical input
 
     public bool tookStep = false;
-    private bool firstIntersectionExit = false;
+    private bool firstIntersectionExit = false; //not needed?
+    private bool firstIntersectionEnter = false;
 
     private void Awake()
     {
@@ -71,7 +74,8 @@ public class PlayerController : MonoBehaviour
 
         //lastCoord = (transform.position.x / gameManager.blockSize).ToString("F2");
         startCoord = new float[] { (transform.position.x / gameManager.blockSize), (transform.position.z / gameManager.blockSize)};
-        lastIntersection = startCoord;
+        //lastIntersection = startCoord;
+        lastIntersection = new float[] { (float)System.Math.Round(startCoord[0], 1), (float)System.Math.Round(startCoord[1], 1) }; //temporay - only used to simplify UI display
         
     }
 
@@ -116,7 +120,9 @@ public class PlayerController : MonoBehaviour
             //Restart session
             if (Input.GetKeyDown(KeyCode.R))
             {
-                gameManager.RestartSession();
+                SceneManager.LoadScene(SceneManager.GetActiveScene().name); //Reload current scene
+                //SceneManager.LoadScene("Game"); //Load scene called Game
+                //gameManager.RestartSession();
             }
 
             //Close game
@@ -232,11 +238,17 @@ public class PlayerController : MonoBehaviour
 
     private void OnTriggerEnter(Collider other) // When player enters an intersection
     {
-        if (firstIntersectionExit)  // if the player did not start in an intersection
+        if (firstIntersectionEnter)  // if the player did not start in an intersection
         {
-            Debug.Log("Player has entered intersection (" + other.GetComponent<Intersection>().coordString + ")");
+            
             calculateDirection(lastIntersection, other.GetComponent<Intersection>().coordinates);   //calculate the direction between the last intersection the one juste entered
         }
+        else    //if this this is the first time enterring the intersection
+        {
+            firstIntersectionEnter = true;
+        }
+        Debug.Log("Player has entered intersection (" + other.GetComponent<Intersection>().coordString + ")");
+        // ADD TO RECORDED PATH
 
     }
 
@@ -338,7 +350,7 @@ public class PlayerController : MonoBehaviour
                 //Debug.Log("North");
             }
             Debug.Log(cardinalDirection);
-            gameManager.cardinalDirection.text = "Went " + cardinalDirection + " from (" + string.Join(",", from coord in lastIntersection select coord) + ") to ("+ string.Join(",", from coord in thisIntersection select coord) + ")";
+            gameManager.cardinalDirection.text = "(" + string.Join(",", from coord in lastIntersection select coord) + ") to ("+ string.Join(",", from coord in thisIntersection select coord) + ") - " + cardinalDirection;
         }
         
         else
