@@ -22,26 +22,26 @@ public class PlayerController : MonoBehaviour
     public float lookSpeed = 50.0f; //Player's turning speed
     public int backwardsStepForce = 500;
 
-    public string screenshotPath = Path.Combine(Directory.GetCurrentDirectory(), "Exports/Screenshots/");
-    public string trackMovementPath = Path.Combine(Directory.GetCurrentDirectory(), "Exports/TrackMovements/");
+    //public string screenshotPath = Path.Combine(Directory.GetCurrentDirectory(), "Exports/Screenshots/");
+    //public string trackMovementPath = Path.Combine(Directory.GetCurrentDirectory(), "Exports/TrackMovements/");
 
     private readonly int xRange = 350; // Ground plane size (x-axis) * 10
     private readonly int yRange = 350; // Ground plane size (y-axis) * 10
 
-    private Camera playerCamera;
+    private Camera playerCamera; //Needed?
     private Rigidbody playerRb;
     private GameManager gameManager;
     private IntersectionManager intersectionManager;
-    //    public Canvas canvas;   //Move to GameManager.cs
+    private RouteManager routeManager;
+    private ScreenshotManager screenshotManager;
 
-    //private PlayerControl _controls;
 
     public Vector3 startPosition; //Used to reset to initial position
     public Vector3 startRotation; //User to reset to initial rotatin
     public Vector2 inputVec;
     public float[] startCoord;
-    public float[] lastIntersection ; //coordinate of the last intersection the player went through
-    public string cardinalDirection;
+    public float[] lastIntersection; //coordinate of the last intersection the player went through - MOVE TO intersectionmanager.cs
+    public string cardinalDirection; //MOVE TO intersectionmanager.cs
 
     public Vector3 currentRotation; //Player's current rotation
     private Vector3 moveVec;
@@ -50,29 +50,32 @@ public class PlayerController : MonoBehaviour
     public float verticalInput; //Value of vertical input
 
     public bool tookStep = false;
-    public bool firstIntersectionExit = false; //not needed?
-    private bool firstIntersectionEnter = false;
-    public bool intersectionStart = true;
+    //public bool firstIntersectionExit = false; //not needed?
+    //private bool firstIntersectionEnter = false;
+    //public bool intersectionStart = true;
 
-    private bool firstDirectionNeed = false;
+    //private bool firstDirectionNeed = false;
 
-    public bool startInSegment = false;
+    //public bool startInSegment = false;
     public bool playerFirstMove = false;
 
     private void Awake()
     {
         // _controls = new PlayerControl();
     }
+
     [ContextMenu ("PlayerController")]
     // Start is called before the first frame update
     void Start()
     {
-        playerCamera = Camera.main; //Set playerCamera to camera with 'main'tag
+        playerCamera = Camera.main; //Set playerCamera to camera with 'main'tag 
         playerRb = GetComponent<Rigidbody>();
         gameManager = FindObjectOfType<GameManager>().GetComponent<GameManager>();
         intersectionManager = FindObjectOfType<GameManager>().GetComponent<IntersectionManager>();
-        // canvas = GameObject.Find("Canvas");
+        routeManager = FindObjectOfType<GameManager>().GetComponent<RouteManager>();
+        screenshotManager = FindObjectOfType<GameManager>().GetComponent<ScreenshotManager>();
 
+        intersectionManager.GotoCoord(routeManager.routeStart[0], routeManager.routeStart[1]);
 
         //Record start position and rotation
         startPosition = transform.position;
@@ -82,24 +85,12 @@ public class PlayerController : MonoBehaviour
 
         //lastCoord = (transform.position.x / gameManager.blockSize).ToString("F2");
         startCoord = new float[] { (transform.position.x / gameManager.blockSize), (transform.position.z / gameManager.blockSize)};
-        //lastIntersection = startCoord;
+        //lastIntersection = startCoord; //restore insted of below
         lastIntersection = new float[] { (float)System.Math.Round(startCoord[0], 1), (float)System.Math.Round(startCoord[1], 1) }; //temporay - only used to simplify UI display
 
 
-        if (!firstIntersectionEnter)
-        {
-            //Debug.Log("INSIDE OF START");
-            //Debug.Log("firstIntersectionEnter =" + firstIntersectionEnter);
-            startInSegment = true;
-            //Debug.Log("firstIntersectionEnter =" + firstIntersectionEnter);
-        }
-
-       
 
     }
-
-        //setSavePaths(); //Set the saving paths for screenshots and player movements
-    
 
     // Update is called once per frame
     void FixedUpdate()
@@ -206,7 +197,7 @@ public class PlayerController : MonoBehaviour
             //Take screenshot
             if (Input.GetKeyDown(KeyCode.S))
             {
-                TakeScreenshot();
+                screenshotManager.TakeScreenshot();
             }
 
             //Start/End session
@@ -218,172 +209,19 @@ public class PlayerController : MonoBehaviour
     }
 
     // WHEN PLAYER ENTERS AN INTERSECTION
-    //private void OnTriggerEnter(Collider other)
-    //{
-
-    //    if ((!firstIntersection) && (intersectionManager.sessionRoute.Last() != other.GetComponent<Intersection>().coordString) )// if not the first time entering an intersection and this intersection is not the same as the last one recorded
-    //    {
-    //        calculateDirection(lastIntersection, other.GetComponent<Intersection>().coordinates);   //calculate the direction between the last intersection the one just entered
-   
-            
-    //            intersectionManager.sessionRoute.Add(other.GetComponent<Intersection>().coordString);
-    //            intersectionManager.sessionRouteDir.Add(other.GetComponent<Intersection>().coordString + cardinalDirection);
-    //    }
-    //    else    //if this is the first time entering the intersection
-    //    {
-    //        intersectionManager.sessionRoute.Add(other.GetComponent<Intersection>().coordString);
-    //        //calculateDirection(lastIntersection, other.GetComponent<Intersection>().coordinates);
-    //        //intersectionManager.sessionRouteDir.Add(other.GetComponent<Intersection>().coordString + cardinalDirection);
-    //        firstIntersection = false;
-    //    }
-
-
-    //    Debug.Log("Player ENTERED entered intersection (" + other.GetComponent<Intersection>().coordString + ")");
-    //    Debug.Log("Route: " + String.Join(";", intersectionManager.sessionRoute));
-    //    Debug.Log("Route with direction: " + String.Join(";", intersectionManager.sessionRouteDir));
-
-    //}
-        private void OnTriggerEnter(Collider other)
+    private void OnTriggerEnter(Collider other)
     {
-        
-
-        string lastRecorded;
-
-       
-
         Debug.Log("ENTER (" + other.GetComponent<Intersection>().coordString + ")");
-
-        
-        if (playerFirstMove && intersectionManager.sessionRoute.Count == 0) //started in segment
-        {
-            intersectionManager.sessionRoute.Add(other.GetComponent<Intersection>().coordString);
-            calculateDirection(lastIntersection, other.GetComponent<Intersection>().coordinates);
-            intersectionManager.sessionRouteDir.Add(other.GetComponent<Intersection>().coordString + cardinalDirection);
-        }
-        else if (intersectionManager.sessionRoute.Count != 0)
-        {
-            lastRecorded = intersectionManager.sessionRoute.Last();
-            if ((lastRecorded == other.GetComponent<Intersection>().coordString)) // same intersection as last
-            {
-                Debug.Log("Same Intersection");
-            }
-            else // different intersection than last
-            {
-                intersectionManager.sessionRoute.Add(other.GetComponent<Intersection>().coordString);
-                calculateDirection(lastIntersection, other.GetComponent<Intersection>().coordinates);
-
-                if (intersectionManager.sessionRouteDir.Count() == 0)
-                {
-                    intersectionManager.sessionRouteDir.Add(lastRecorded + cardinalDirection);
-                }
-
-
-                intersectionManager.sessionRouteDir.Add(other.GetComponent<Intersection>().coordString + cardinalDirection);
-            }
-        }
-
-
-        else //if no intersections have been recorded
-        {
-            intersectionManager.sessionRoute.Add(other.GetComponent<Intersection>().coordString);
-        }
-
-        firstIntersectionEnter = true;
-
-
-        Debug.Log("Route: " + String.Join(";", intersectionManager.sessionRoute));
-        Debug.Log("Route with direction: " + String.Join(";", intersectionManager.sessionRouteDir));
-
+        intersectionManager.OnIntersectionEnter(other);
     }
 
     // WHEN PLAYER LEAVES AN INTERSECTION
     private void OnTriggerExit(Collider other)
     {
-        firstIntersectionExit = true;
         Debug.Log("EXIT (" + other.GetComponent<Intersection>().coordString + ")");
-        lastIntersection = other.GetComponent<Intersection>().coordinates;  // the intersection left becomes the last intersection
-
-        if (!firstIntersectionExit) // if the playe started in the intersection
-        {
-            //intersectionManager.sessionRoute.Add(other.GetComponent<Intersection>().coordString);
-            //intersectionManager.sessionRouteDir.Add(other.GetComponent<Intersection>().coordString + cardinalDirection);
-            //firstIntersectionExit = true;
-        }
-        // firstIntersectionExit = true;   // first time the player exits an intersection
-
-        
-        //Debug.Log("Route: " + String.Join(";", intersectionManager.sessionRoute));
-        //Debug.Log("Route with direction: " + String.Join(";", intersectionManager.sessionRouteDir));
-     
+        intersectionManager.OnIntersectionExit(other);
     }
 
-
-    void TakeScreenshot()
-    {
-
-        if (!System.IO.Directory.Exists(gameManager.screenshotPath))
-        {
-            System.IO.Directory.CreateDirectory(gameManager.screenshotPath);
-
-        }
-
-        //var screenshotName = "Screenshot_" + System.DateTime.Now.ToString("HH-mm-ss") + ".png";
-        var screenshotName = gameManager.inputCoordX+ "."+ gameManager.inputCoordY + gameManager.inputDir + ".png";
-
-        ScreenCapture.CaptureScreenshot(System.IO.Path.Combine(gameManager.screenshotPath, screenshotName));
-        Debug.Log(gameManager.screenshotPath + screenshotName);
-    }
-
-    //public void GotoCoordinates(int posX, int posY, int rot) - DELETE
-
-    ////CHECK IF COORDINATES ARE VALID
-
-    ////IF VALID
-
-    //{
-    //    transform.position = new Vector3(posX * gameManager.blockSize, 1, posY * gameManager.blockSize);
-    //}
-
-    public void calculateDirection(float[] lastIntersection, float[] thisIntersection)
-    {
-        //Debug.Log("Last intersection: " + string.Join(", ", from coord in lastIntersection select coord));
-        //Debug.Log("This intersection: " + string.Join(", ", from coord in thisIntersection select coord));
-
-        if (lastIntersection != thisIntersection) //if the the last intersection is not the same as this one
-        {
-            if ((lastIntersection[0] - thisIntersection[0]) > 0)
-            {
-                cardinalDirection = "W";
-                //Debug.Log("West");
-            }
-            else if (((lastIntersection[0] - thisIntersection[0]) < 0))
-            {
-                cardinalDirection = "E";
-                //Debug.Log("East");
-            }
-            else if ((lastIntersection[1] - thisIntersection[1]) > 0)
-            {
-                cardinalDirection = "S";
-                //Debug.Log("South");
-            }
-            else
-            {
-                cardinalDirection = "N";
-                //Debug.Log("North");
-            }
-            //Debug.Log(cardinalDirection);
-            gameManager.cardinalDirection.text = "(" + string.Join(",", from coord in lastIntersection select coord) + ") to ("+ string.Join(",", from coord in thisIntersection select coord) + ") - " + cardinalDirection;    // Would String.Join("; ", myArray) work? - TO TEST
-
-        }
-
-        else
-        {
-            Debug.Log("Same intersecion");
-        }
-
-
-
-    }
 
 
 }

@@ -5,6 +5,7 @@ using UnityEngine;
 public class Intersection : MonoBehaviour
 {
     private GameManager gameManager;
+    private RouteManager routeManager;
 
     public string coordString;  // Intersection's coordinate in "x.y" format
     public float[] coordinates;  // Intersection's coordinate in [x,y] format
@@ -14,9 +15,11 @@ public class Intersection : MonoBehaviour
     void Awake()
     {
         gameManager = FindObjectOfType<GameManager>().GetComponent<GameManager>();
+        routeManager = FindObjectOfType<GameManager>().GetComponent<RouteManager>();
+
         coordinates[0] = (transform.position.x / gameManager.blockSize);
         coordinates[1] = (transform.position.z / gameManager.blockSize);
-        coordString = coordinates[0] + "," + coordinates[1];
+        coordString = coordinates[0] + routeManager.coordSeparator + coordinates[1];
     }
 
     // Update is called once per frame
