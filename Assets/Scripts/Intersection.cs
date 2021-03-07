@@ -11,7 +11,7 @@ public class Intersection : MonoBehaviour
     public int instanceID;
 
     // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
         gameManager = FindObjectOfType<GameManager>().GetComponent<GameManager>();
         coordinates[0] = (transform.position.x / gameManager.blockSize);
