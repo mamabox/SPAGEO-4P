@@ -200,10 +200,20 @@ public class PlayerController : MonoBehaviour
                 screenshotManager.TakeScreenshot();
             }
 
-            //Start/End session
+            //Start/End route recording
             if (Input.GetKeyDown(KeyCode.Space))
             {
-                Debug.Log("Session status changed (Started or Ended)");
+                //Debug.Log("Session status changed (Started or Ended)");
+                routeManager.validatePath(intersectionManager.sessionRoute);
+            }
+
+            //New attempt
+            if (Input.GetKeyDown(KeyCode.X))
+            {
+                //Debug.Log("Session status changed (Started or Ended)");
+                Debug.Log("session Route cleared");
+                intersectionManager.sessionRoute.Clear();
+                intersectionManager.GotoCoord("1.5_4","E");
             }
         }
     }

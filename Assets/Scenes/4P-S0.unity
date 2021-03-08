@@ -322,7 +322,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1194fa90e0f4a48df96f0eaa1a47f554, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  coordSeparator: ;
+  coordSeparator: _
   currentRoute: []
   routeStart:
   - 
@@ -3617,7 +3617,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 96087574}
-        m_MethodName: inputFieldActive
+        m_MethodName: InputFieldActive
         m_Mode: 6
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -3631,7 +3631,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 96087574}
-        m_MethodName: inputFieldActive
+        m_MethodName: InputFieldActive
         m_Mode: 6
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

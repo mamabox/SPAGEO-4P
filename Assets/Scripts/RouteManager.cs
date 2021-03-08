@@ -17,12 +17,12 @@ public class RouteManager : MonoBehaviour
 
     public string[] currentRoute;
     public string[] routeStart;
-    
+
 
     // Start is called before the first frame update
     void Start()
     {
-        currentRoute = route2;  //for testing
+        currentRoute = route1;  //for testing
         intersectionManager = GetComponent<IntersectionManager>();
         routeStart = getRouteStart(currentRoute);
     }
@@ -33,12 +33,71 @@ public class RouteManager : MonoBehaviour
 
     }
 
-    void validatePath()
+    public void validatePath(List<string> myRoute)
     {
-        //1. Check if route is correct
-        //2. check if reached destination
-        //3. if route not correct, check where the error was
 
+        List<string> correctRoute = new List<string>();
+        correctRoute = currentRoute.ToList();
+        //foreach (string coord in currentRoute)
+        //{
+        //    correctRoute.Add(coord);
+        //}
+        correctRoute.RemoveAt(0);   //Remove the start point 
+
+        Debug.Log("correct Route: " + string.Join(coordSeparator, correctRoute));
+
+        validationInfo validationInfo = new validationInfo();
+        bool isValid = false;
+        //1. Check if route is correct
+        if (correctRoute.Count() == myRoute.Count())     // are the routes the same lenght
+        {
+            Debug.Log("Routes have SAME LENgHT");
+            for (int i = 0; i < myRoute.Count(); i++)   //3. if route not correct, check where the error was
+            {
+                if (myRoute.ElementAt(i) == correctRoute.ElementAt(i))
+                    isValid = true;
+                else
+                {
+                    isValid = false;
+                }
+            }
+
+        }
+
+        if (correctRoute.Last() == myRoute.Last())  //2. check if reached destination
+        {
+            Debug.Log("Routes ends in the same place");
+        }
+        else
+        {
+            Debug.Log("Routes DO NOT in the same place");
+        }
+
+        if (!isValid)
+        {
+
+            for (int i = 0; i < myRoute.Count(); i++)   //3. if route not correct, check where the error was
+            {
+                if (myRoute.ElementAt(i) != correctRoute.ElementAt(i))
+                {
+                    Debug.Log("Error at intersectin #: " + (i+1));
+                    //break;
+                }
+            }
+        }
+
+        Debug.Log("Routes are the same= " + isValid);
+
+
+
+    }
+
+    private struct validationInfo
+    {
+        public bool isCorrect;
+        public bool endReached;
+        public int errorLocation;
+        public int routeLength;
     }
 
     private string[] getRouteStart(string[] route)

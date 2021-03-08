@@ -42,7 +42,7 @@ public class GameManager : MonoBehaviour
 
     public bool keyboardShortcutsEnabled = true;
 
-    private string routeSeparator = ",";
+    private string routeSeparator = ",";    //UI display only
 
     // Start is called before the first frame update
     void Start()
