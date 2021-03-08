@@ -23,7 +23,7 @@ public class RouteManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        currentRoute = route2;  //for testing
+        currentRoute = route1;  //for testing
         gameManager = GetComponent<GameManager>();
         intersectionManager = GetComponent<IntersectionManager>();
         routeStart = getRouteStart(currentRoute);
@@ -50,39 +50,36 @@ public class RouteManager : MonoBehaviour
 
         
         bool isValid = false;
+        bool hasError = false;
         //1. Check if route is correct
         if (correctRoute.Count() == myRoute.Count())     // are the routes the same lenght
         {
             //Debug.Log("Routes have SAME LENgHT");
             for (int i = 0; i < myRoute.Count(); i++)   //3. if route not correct, check where the error was
             {
-                if (myRoute.ElementAt(i) == correctRoute.ElementAt(i))
+                if (myRoute.ElementAt(i) != correctRoute.ElementAt(i))
                 {
-                    isValid = true;
-                    validationInfo.isValid = true;
+                    hasError = true;
                 }    
-            
-                else
-                {
-                    validationInfo.isValid = false;
-                    isValid = false;
-                }
+
             }
 
         }
-        else
-        {
-            isValid = false;
-        }
+        //else
+        //{
+        //    hasError = true;
+        //}
 
-        if (isValid)
+        if (!hasError)
         {
+            validationInfo.isValid = true;
             validationInfo.errorAt = 0;
             validationInfo.endReached = true;
         }
         else
         {
-                if (correctRoute.Last() == myRoute.Last())  //2. check if reached destination
+            validationInfo.isValid = false;
+            if (correctRoute.Last() == myRoute.Last())  //2. check if reached destination
             {
                 validationInfo.endReached = true;
                 //Debug.Log("Routes ends in the same place");
