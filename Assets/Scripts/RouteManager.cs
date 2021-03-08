@@ -12,10 +12,10 @@ public class RouteManager : MonoBehaviour
 
     //VALID ROUTES
     private string[] route1 = { "2_4E", "2_4", "3_4", "4_4", "4_5", "3_5" }; // Start point + direction, route coodirnates
-    private string[] route2 = { "2_4E", "2_4", "3_4" };
+    private string[] route2 = { "2_4E", "2_4", "3_4", "3_5"};
     private string[] route3 = { "1.5_4E", "2_4", "3_4" };
 
-    public string[] currentRoute;
+    private string[] currentRoute;
     public string[] routeStart;
     public ValidationInfo validationInfo = new ValidationInfo();
 
@@ -54,30 +54,31 @@ public class RouteManager : MonoBehaviour
         //1. Check if route is correct
         if (correctRoute.Count() == myRoute.Count())     // are the routes the same lenght
         {
-            //Debug.Log("Routes have SAME LENgHT");
+            //Debug.Log("Routes have the same length");
             for (int i = 0; i < myRoute.Count(); i++)   //3. if route not correct, check where the error was
             {
                 if (myRoute.ElementAt(i) != correctRoute.ElementAt(i))
                 {
+                    //Debug.Log("comparaison error found");
                     hasError = true;
-                }    
-
+                }
             }
-
         }
-        //else
-        //{
-        //    hasError = true;
-        //}
+        else
+        {
+            hasError = true;
+        }
 
         if (!hasError)
         {
+            //Debug.Log("there are no errors, the route is valid");
             validationInfo.isValid = true;
             validationInfo.errorAt = 0;
             validationInfo.endReached = true;
         }
         else
         {
+            //Debug.Log("there are errors");
             validationInfo.isValid = false;
             if (correctRoute.Last() == myRoute.Last())  //2. check if reached destination
             {
