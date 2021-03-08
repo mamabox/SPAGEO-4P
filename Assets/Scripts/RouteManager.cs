@@ -33,7 +33,7 @@ public class RouteManager : MonoBehaviour
 
     }
 
-    public void validatePath(List<string> myRoute)
+    public validationInfo validatePath(List<string> myRoute)
     {
 
         List<string> correctRoute = new List<string>();
@@ -44,20 +44,25 @@ public class RouteManager : MonoBehaviour
         //}
         correctRoute.RemoveAt(0);   //Remove the start point 
 
-        Debug.Log("correct Route: " + string.Join(coordSeparator, correctRoute));
+        Debug.Log("Checking route: " + string.Join(coordSeparator, correctRoute));
 
-        validationInfo validationInfo = new validationInfo();
+        validationInfo _validationInfo = new validationInfo();
         bool isValid = false;
         //1. Check if route is correct
         if (correctRoute.Count() == myRoute.Count())     // are the routes the same lenght
         {
-            Debug.Log("Routes have SAME LENgHT");
+            //Debug.Log("Routes have SAME LENgHT");
             for (int i = 0; i < myRoute.Count(); i++)   //3. if route not correct, check where the error was
             {
                 if (myRoute.ElementAt(i) == correctRoute.ElementAt(i))
+                {
                     isValid = true;
+                    _validationInfo.isValid = true;
+                }    
+            
                 else
                 {
+                    _validationInfo.isValid = false;
                     isValid = false;
                 }
             }
@@ -66,11 +71,13 @@ public class RouteManager : MonoBehaviour
 
         if (correctRoute.Last() == myRoute.Last())  //2. check if reached destination
         {
-            Debug.Log("Routes ends in the same place");
+            _validationInfo.endReached = true;
+            //Debug.Log("Routes ends in the same place");
         }
         else
         {
-            Debug.Log("Routes DO NOT in the same place");
+            _validationInfo.endReached = false;
+            //Debug.Log("Routes DO NOT in the same place");
         }
 
         if (!isValid)
@@ -80,23 +87,31 @@ public class RouteManager : MonoBehaviour
             {
                 if (myRoute.ElementAt(i) != correctRoute.ElementAt(i))
                 {
-                    Debug.Log("Error at intersectin #: " + (i+1));
-                    //break;
+                    _validationInfo.errorAt = i + 1;
+                    //Debug.Log("Error at intersectin #: " + (i+1));
+                    break;
                 }
+                else
+                {
+                    _validationInfo.errorAt = 0;
+                }
+
             }
         }
 
-        Debug.Log("Routes are the same= " + isValid);
-
+        //Debug.Log("Routes are the same= " + isValid);
+        _validationInfo.routeLength = myRoute.Count();
+        Debug.Log("Valid= " + _validationInfo.isValid + "- length: " + _validationInfo.routeLength + "- error at #: " + _validationInfo.errorAt + "- endReached= " + _validationInfo.endReached);
+        return _validationInfo;
 
 
     }
 
-    private struct validationInfo
+    public struct validationInfo
     {
-        public bool isCorrect;
+        public bool isValid;
         public bool endReached;
-        public int errorLocation;
+        public int errorAt;
         public int routeLength;
     }
 

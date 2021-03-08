@@ -104,4 +104,11 @@ public class GameManager : MonoBehaviour
         intersectionManager.GotoCoord(inputCoord, inputDir);
     }
 
+    public void newAttemp()
+    {
+        intersectionManager.sessionRoute.Clear();
+        intersectionManager.sessionRouteDir.Clear();
+        intersectionManager.GotoCoord("1.5_4", "E");
+    }
+
 }

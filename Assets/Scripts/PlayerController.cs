@@ -70,7 +70,7 @@ public class PlayerController : MonoBehaviour
     {
         playerCamera = Camera.main; //Set playerCamera to camera with 'main'tag 
         playerRb = GetComponent<Rigidbody>();
-        gameManager = FindObjectOfType<GameManager>().GetComponent<GameManager>();
+        gameManager = GetComponent<GameManager>();
         intersectionManager = FindObjectOfType<GameManager>().GetComponent<IntersectionManager>();
         routeManager = FindObjectOfType<GameManager>().GetComponent<RouteManager>();
         screenshotManager = FindObjectOfType<GameManager>().GetComponent<ScreenshotManager>();
@@ -212,8 +212,7 @@ public class PlayerController : MonoBehaviour
             {
                 //Debug.Log("Session status changed (Started or Ended)");
                 Debug.Log("session Route cleared");
-                intersectionManager.sessionRoute.Clear();
-                intersectionManager.GotoCoord("1.5_4","E");
+                gameManager.newAttemp();
             }
         }
     }
