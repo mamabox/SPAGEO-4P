@@ -18,12 +18,13 @@ public class GameManager : MonoBehaviour
     public int blockSize = 35; //define the city's block size in meters
 
     // UI Elements
-    public TextMeshProUGUI RouteText;
-    public TextMeshProUGUI RouteDirText;
+    public TextMeshProUGUI routeText;
+    public TextMeshProUGUI routeDirText;
     public TextMeshProUGUI backwardsForceText;
     public TextMeshProUGUI cardinalDirection;
     public TextMeshProUGUI positionText;
     public TextMeshProUGUI rotationText;
+    public TextMeshProUGUI routeValidationText;
 
     public TMP_InputField posXInputField;
     public TMP_InputField posYInputField;
@@ -41,6 +42,7 @@ public class GameManager : MonoBehaviour
     public string trackMovementPath;
 
     public bool keyboardShortcutsEnabled = true;
+    public bool validationCheck = false;
 
     private string routeSeparator = ",";    //UI display only
 
@@ -65,8 +67,16 @@ public class GameManager : MonoBehaviour
         backwardsForceText.text = "Backwards Force (I & O) = " + player.GetComponent<PlayerController>().backwardsStepForce;
         positionText.text = "POS (X,Z) = (" + player.transform.position.x.ToString("F2") + "," + player.transform.position.z.ToString("F2") + ")";
         rotationText.text = "ROT (Y) = " + player.transform.rotation.eulerAngles.y.ToString("F2"); //display rotation in euler angles with two digits
-        RouteText.text = "R : "+ String.Join(routeSeparator, intersectionManager.sessionRoute);
-        RouteDirText.text = "RD: "+ String.Join(routeSeparator, intersectionManager.sessionRouteDir);
+        routeText.text = "R : "+ String.Join(routeSeparator, intersectionManager.sessionRoute);
+        routeDirText.text = "RD: "+ String.Join(routeSeparator, intersectionManager.sessionRouteDir);
+        if (validationCheck)
+        {
+            routeValidationText.text = ("Valid= " + routeManager.validationInfo.isValid+ " - errorat #: " + routeManager.validationInfo.errorAt + " - endReached= " + routeManager.validationInfo.endReached + " - length: " + routeManager.validationInfo.routeLength);
+        }
+        else
+        {
+            routeValidationText.text = "Validation (spacebar)";
+        }
     }
 
     public void UpdateCoordinates()
@@ -106,6 +116,8 @@ public class GameManager : MonoBehaviour
 
     public void newAttemp()
     {
+        // ADD CLEAR UI
+        validationCheck = false;
         intersectionManager.sessionRoute.Clear();
         intersectionManager.sessionRouteDir.Clear();
         intersectionManager.GotoCoord("1.5_4", "E");

@@ -6,7 +6,7 @@ using System.Linq;
 public class RouteManager : MonoBehaviour
 {
     private IntersectionManager intersectionManager;
-    //private GameManager gameManager;
+    private GameManager gameManager;
 
     public string coordSeparator = "_";
 
@@ -17,12 +17,14 @@ public class RouteManager : MonoBehaviour
 
     public string[] currentRoute;
     public string[] routeStart;
+    public ValidationInfo validationInfo = new ValidationInfo();
 
 
     // Start is called before the first frame update
     void Start()
     {
-        currentRoute = route1;  //for testing
+        currentRoute = route2;  //for testing
+        gameManager = GetComponent<GameManager>();
         intersectionManager = GetComponent<IntersectionManager>();
         routeStart = getRouteStart(currentRoute);
     }
@@ -33,9 +35,9 @@ public class RouteManager : MonoBehaviour
 
     }
 
-    public validationInfo validatePath(List<string> myRoute)
+    public ValidationInfo validatePath(List<string> myRoute)
     {
-
+        gameManager.validationCheck = true;
         List<string> correctRoute = new List<string>();
         correctRoute = currentRoute.ToList();
         //foreach (string coord in currentRoute)
@@ -46,7 +48,7 @@ public class RouteManager : MonoBehaviour
 
         Debug.Log("Checking route: " + string.Join(coordSeparator, correctRoute));
 
-        validationInfo _validationInfo = new validationInfo();
+        
         bool isValid = false;
         //1. Check if route is correct
         if (correctRoute.Count() == myRoute.Count())     // are the routes the same lenght
@@ -57,57 +59,74 @@ public class RouteManager : MonoBehaviour
                 if (myRoute.ElementAt(i) == correctRoute.ElementAt(i))
                 {
                     isValid = true;
-                    _validationInfo.isValid = true;
+                    validationInfo.isValid = true;
                 }    
             
                 else
                 {
-                    _validationInfo.isValid = false;
+                    validationInfo.isValid = false;
                     isValid = false;
                 }
             }
 
         }
-
-        if (correctRoute.Last() == myRoute.Last())  //2. check if reached destination
+        else
         {
-            _validationInfo.endReached = true;
-            //Debug.Log("Routes ends in the same place");
+            isValid = false;
+        }
+
+        if (isValid)
+        {
+            validationInfo.errorAt = 0;
+            validationInfo.endReached = true;
         }
         else
         {
-            _validationInfo.endReached = false;
-            //Debug.Log("Routes DO NOT in the same place");
-        }
-
-        if (!isValid)
-        {
+                if (correctRoute.Last() == myRoute.Last())  //2. check if reached destination
+            {
+                validationInfo.endReached = true;
+                //Debug.Log("Routes ends in the same place");
+            }
+            else
+            {
+                validationInfo.endReached = false;
+                //Debug.Log("Routes DO NOT in the same place");
+            }
 
             for (int i = 0; i < myRoute.Count(); i++)   //3. if route not correct, check where the error was
             {
-                if (myRoute.ElementAt(i) != correctRoute.ElementAt(i))
+                if (correctRoute.Count() >= myRoute.Count()) // myRoute is not longer than the correct route
                 {
-                    _validationInfo.errorAt = i + 1;
-                    //Debug.Log("Error at intersectin #: " + (i+1));
-                    break;
+
+                    if (myRoute.ElementAt(i) != correctRoute.ElementAt(i))
+                    {
+                        validationInfo.errorAt = i + 1;
+                        //Debug.Log("Error at intersectin #: " + (i+1));
+                        break;
+                    }
+                    else
+                    {
+                        validationInfo.errorAt = 0;
+                        
+                    }
                 }
                 else
                 {
-                    _validationInfo.errorAt = 0;
+                    validationInfo.errorAt = correctRoute.Count()+1;
                 }
 
             }
         }
 
         //Debug.Log("Routes are the same= " + isValid);
-        _validationInfo.routeLength = myRoute.Count();
-        Debug.Log("Valid= " + _validationInfo.isValid + "- length: " + _validationInfo.routeLength + "- error at #: " + _validationInfo.errorAt + "- endReached= " + _validationInfo.endReached);
-        return _validationInfo;
+        validationInfo.routeLength = myRoute.Count();
+        Debug.Log("Valid= " + validationInfo.isValid + "- length: " + validationInfo.routeLength + "- error at #: " + validationInfo.errorAt + "- endReached= " + validationInfo.endReached);
+        return validationInfo;
 
 
     }
 
-    public struct validationInfo
+    public struct ValidationInfo
     {
         public bool isValid;
         public bool endReached;
