@@ -15,7 +15,7 @@ public class RouteManager : MonoBehaviour
     private string[] route2 = { "2_4E", "2_4", "3_4", "3_5"};
     private string[] route3 = { "1.5_4E", "2_4", "3_4" };
 
-    private string[] currentRoute;
+    public string[] currentRoute;
     public string[] routeStart;
     public ValidationInfo validationInfo = new ValidationInfo();
 
@@ -38,8 +38,7 @@ public class RouteManager : MonoBehaviour
     public ValidationInfo validatePath(List<string> myRoute)
     {
         gameManager.validationCheck = true;
-        List<string> correctRoute = new List<string>();
-        correctRoute = currentRoute.ToList();
+        List<string> correctRoute = currentRoute.ToList();
         //foreach (string coord in currentRoute)
         //{
         //    correctRoute.Add(coord);
@@ -48,11 +47,13 @@ public class RouteManager : MonoBehaviour
 
         Debug.Log("Checking route: " + string.Join(coordSeparator, correctRoute));
 
-        
-        bool isValid = false;
         bool hasError = false;
         //1. Check if route is correct
-        if (correctRoute.Count() == myRoute.Count())     // are the routes the same lenght
+        if (correctRoute.Count() != myRoute.Count())     
+        {
+            hasError = true;
+        }
+        else //  routes the same lenght
         {
             //Debug.Log("Routes have the same length");
             for (int i = 0; i < myRoute.Count(); i++)   //3. if route not correct, check where the error was
@@ -64,10 +65,7 @@ public class RouteManager : MonoBehaviour
                 }
             }
         }
-        else
-        {
-            hasError = true;
-        }
+   
 
         if (!hasError)
         {

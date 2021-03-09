@@ -58,6 +58,7 @@ public class PlayerController : MonoBehaviour
 
     //public bool startInSegment = false;
     public bool playerFirstMove = false;
+    public bool cameraTilt = true;
 
     private void Awake()
     {
@@ -214,6 +215,12 @@ public class PlayerController : MonoBehaviour
                 //Debug.Log("Session status changed (Started or Ended)");
                 Debug.Log("session Route cleared");
                 gameManager.newAttemp();
+            }
+
+            //Camera switch
+            if (Input.GetKeyDown(KeyCode.C))
+            {
+                cameraTilt = !cameraTilt;
             }
         }
     }
