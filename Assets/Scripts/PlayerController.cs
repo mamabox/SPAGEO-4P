@@ -58,7 +58,7 @@ public class PlayerController : MonoBehaviour
 
     //public bool startInSegment = false;
     public bool playerFirstMove = false;
-    public bool cameraTilt = true;
+    //public bool cameraTilt = true;
 
     private void Awake()
     {
@@ -218,10 +218,10 @@ public class PlayerController : MonoBehaviour
             }
 
             //Camera switch
-            if (Input.GetKeyDown(KeyCode.C))
-            {
-                cameraTilt = !cameraTilt;
-            }
+            //if (Input.GetKeyDown(KeyCode.C))
+            //{
+            //    cameraTilt = !cameraTilt;
+            //}
         }
     }
 

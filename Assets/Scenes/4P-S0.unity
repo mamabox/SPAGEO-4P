@@ -1860,6 +1860,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: CityV02
       objectReference: {fileID: 0}
+    - target: {fileID: 5930429911339762354, guid: 34316a0cee7a14c9fa57130c7ef816bf,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 78.05
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 34316a0cee7a14c9fa57130c7ef816bf, type: 3}
 --- !u!1 &945562157
@@ -3209,7 +3214,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1463663907}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 210, y: 3, z: 140}
+  m_LocalPosition: {x: 210, y: 1.5, z: 140}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -3912,6 +3917,7 @@ MonoBehaviour:
   verticalInput: 0
   tookStep: 0
   playerFirstMove: 0
+  cameraTilt: 1
 --- !u!54 &2061365778
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -3996,13 +4002,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2061365775}
-  m_LocalRotation: {x: 0, y: 0.7071068, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: 27.58, y: 1, z: 106.9}
+  m_LocalRotation: {x: 0, y: 0.7071068, z: 0, w: 0.70710677}
+  m_LocalPosition: {x: 27.58, y: 1.5, z: 106.9}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 3
-  m_LocalEulerAnglesHint: {x: 0, y: 90, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 90.00001, z: 0}
 --- !u!1 &2105519251
 GameObject:
   m_ObjectHideFlags: 0

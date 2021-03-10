@@ -43,9 +43,9 @@ public class ScreenshotManager : MonoBehaviour
         //var screenshotName = "Screenshot_" + System.DateTime.Now.ToString("HH-mm-ss") + ".png";
         var screenshotName = gameManager.inputCoordX + routeManager.coordSeparator + gameManager.inputCoordY + gameManager.inputDir + ".png";
 
-        canvas.enabled = false;
+        //canvas.enabled = false;
         ScreenCapture.CaptureScreenshot(System.IO.Path.Combine(gameManager.screenshotPath, screenshotName));
-        canvas.enabled = true;
+        //canvas.enabled = true;
         Debug.Log(gameManager.screenshotPath + screenshotName);
     }
 
