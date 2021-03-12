@@ -1930,6 +1930,16 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1332997490349174161, guid: 34316a0cee7a14c9fa57130c7ef816bf,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0.19
+      objectReference: {fileID: 0}
+    - target: {fileID: 1332997490349174161, guid: 34316a0cee7a14c9fa57130c7ef816bf,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0.03
+      objectReference: {fileID: 0}
     - target: {fileID: 4666188592730292892, guid: 34316a0cee7a14c9fa57130c7ef816bf,
         type: 3}
       propertyPath: m_RootOrder
@@ -1994,6 +2004,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalPosition.x
       value: 78.05
+      objectReference: {fileID: 0}
+    - target: {fileID: 7937662365980777799, guid: 34316a0cee7a14c9fa57130c7ef816bf,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0.35
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 34316a0cee7a14c9fa57130c7ef816bf, type: 3}
@@ -2586,10 +2601,10 @@ LineRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_Positions:
-  - {x: 70, y: 0.1, z: 140}
-  - {x: 140, y: 0.1, z: 140}
-  - {x: 140, y: 0.1, z: 175}
-  - {x: 85, y: 0.1, z: 175}
+  - {x: 70, y: 0.01, z: 140}
+  - {x: 140, y: 0.01, z: 140}
+  - {x: 140, y: 0.01, z: 175}
+  - {x: 85, y: 0.01, z: 175}
   m_Parameters:
     serializedVersion: 3
     widthMultiplier: 1
