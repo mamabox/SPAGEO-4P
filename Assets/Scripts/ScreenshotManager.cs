@@ -12,7 +12,7 @@ public class ScreenshotManager : MonoBehaviour
     private string savePath;
 
 
-    private string[] routeDir2 = { "1_1N","1_2N","1_2E","2_2E","2_2N","2_3N" };
+    //private string[] routeDir2 = { "1_1N","1_2N","1_2E","2_2E","2_2N","2_3N" };
     private string[] currentRouteDir;
 
     // Start is called before the first frame update
@@ -23,7 +23,7 @@ public class ScreenshotManager : MonoBehaviour
         canvas = FindObjectOfType<Canvas>();
 
         savePath = Path.Combine(gameManager.screenshotPath, "/route/");
-        currentRouteDir = routeDir2;
+        //currentRouteDir = routeDir2;
     }
 
     // Update is called once per frame

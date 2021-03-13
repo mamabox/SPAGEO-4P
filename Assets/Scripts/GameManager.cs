@@ -13,6 +13,7 @@ public class GameManager : MonoBehaviour
     private GameObject player;
     private IntersectionManager intersectionManager;
     private RouteManager routeManager;
+    private PlayerController playerController;
     
     public Canvas canvas;
     public int blockSize = 35; //define the city's block size in meters
@@ -44,7 +45,7 @@ public class GameManager : MonoBehaviour
     public bool keyboardShortcutsEnabled = true;
     public bool validationCheck = false;
 
-    private string routeSeparator = ",";    //UI display only
+    public string routeSeparator = ",";    //UI display only
 
     // Start is called before the first frame update
     void Start()
@@ -52,6 +53,7 @@ public class GameManager : MonoBehaviour
         player = GameObject.FindGameObjectWithTag("Player");
         intersectionManager = GetComponent<IntersectionManager>();
         routeManager = GetComponent<RouteManager>();
+        playerController = player.GetComponent<PlayerController>();
 
         goto_Btn.onClick.AddListener(gotoBtnHandler);
 
@@ -114,13 +116,15 @@ public class GameManager : MonoBehaviour
         intersectionManager.GotoCoord(inputCoord, inputDir);
     }
 
-    public void newAttemp()
+    public void newAttempt()
     {
         // ADD CLEAR UI
         validationCheck = false;
         intersectionManager.sessionRoute.Clear();
         intersectionManager.sessionRouteDir.Clear();
-        intersectionManager.GotoCoord("1.5_4", "E");
+        playerController.playerHasMoved = false;
+        //intersectionManager.GotoCoord("1.5_4", "E");
+        intersectionManager.GotoCoord(routeManager.routeStart.ElementAt(0), routeManager.routeStart.ElementAt(1));
     }
 
 }

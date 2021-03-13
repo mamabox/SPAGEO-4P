@@ -2,31 +2,45 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
+using System.IO;
 
 public class RouteManager : MonoBehaviour
 {
+    public GameObject routeIndicatorPrefab;
+    public GameObject checkpointMarkPrefab;
     private IntersectionManager intersectionManager;
     private GameManager gameManager;
 
-    public string coordSeparator = "_";
+    public string coordSeparator = "_"; //Should be CHAR
 
     //VALID ROUTES
-    private string[] route1 = { "2_4E", "2_4", "3_4", "4_4", "4_5", "3_5" }; // Start point + direction, route coodirnates
-    private string[] route2 = { "2_4E", "2_4", "3_4", "3_5"};
-    private string[] route3 = { "1.5_4E", "2_4", "3_4" };
+    //private string[] route1 = { "2_4E", "2_4", "3_4", "4_4", "4_5", "3_5" }; // Start point + direction, route coodirnates
+    private List<string> route1 = new List<string> { "2_4E", "2_4", "3_4", "4_4", "4_5", "3_5" }; // Start point + direction, route coodirnates
+    private List<string> route2 = new List<string> { "2_4E", "2_4", "3_4" };
+    public List<string> importedRoutes;
 
-    public string[] currentRoute;
-    public string[] routeStart;
+    public List<string> selectedRoute;
+    public List<string> routeStart;
     public ValidationInfo validationInfo = new ValidationInfo();
+    private string routeImportPath;
 
-
+    [ContextMenu("Route Manager")]
     // Start is called before the first frame update
     void Start()
     {
-        currentRoute = route1;  //for testing
         gameManager = GetComponent<GameManager>();
         intersectionManager = GetComponent<IntersectionManager>();
-        routeStart = getRouteStart(currentRoute);
+
+        routeImportPath = Path.Combine(Directory.GetCurrentDirectory(), "Assets/Media/Text/");
+
+        importedRoutes = importRoutes("routes.txt");
+        //selectedRoute = route2;//for testing, chooses a route maually
+        //Debug.Log("Checking selectedRoute: " + string.Join(gameManager.routeSeparator, selectedRoute));
+        selectedRoute = importedRoutes.ElementAt(0).Split(',').ToList();  //for testing, chooses a route
+        //Debug.Log("Checking selectedRoute (from Import): " + string.Join(gameManager.routeSeparator, selectedRoute));
+
+        routeStart = getRouteStart(selectedRoute);
+        SpawnLine(selectedRoute);
     }
 
     // Update is called once per frame
@@ -38,14 +52,11 @@ public class RouteManager : MonoBehaviour
     public ValidationInfo validatePath(List<string> myRoute)
     {
         gameManager.validationCheck = true;
-        List<string> correctRoute = currentRoute.ToList();
-        //foreach (string coord in currentRoute)
-        //{
-        //    correctRoute.Add(coord);
-        //}
+        List<string> correctRoute = new List<string>(selectedRoute);
+
         correctRoute.RemoveAt(0);   //Remove the start point 
 
-        Debug.Log("Checking route: " + string.Join(coordSeparator, correctRoute));
+        Debug.Log("Checking Correctroute: " + string.Join(coordSeparator, correctRoute));
 
         bool hasError = false;
         //1. Check if route is correct
@@ -74,7 +85,7 @@ public class RouteManager : MonoBehaviour
             validationInfo.errorAt = 0;
             validationInfo.endReached = true;
         }
-        else
+        else if (myRoute.Count!=0)
         {
             //Debug.Log("there are errors");
             validationInfo.isValid = false;
@@ -130,14 +141,55 @@ public class RouteManager : MonoBehaviour
         public int routeLength;
     }
 
-    private string[] getRouteStart(string[] route)
+    private List<string> getRouteStart(List<string> route) // returns the first 
     {
-        char _startDir = route[0][route[0].Length - 1];    //direcion is the last character
+
+        Debug.Log("Route count (getRouteStart)= " + selectedRoute.Count());
+        //char _startDir = route[0][route[0].Length - 1];    //direcion is the last character of the last coordinate
+        char _startDir = route.ElementAt(0).Last();     //direcion is the last character of the last coordinate
         string _startCoord = route[0].Remove(route[0].Length - 1);  //coord is route[0] minus last character
+        //string _startCoord = route.ElementAt(0).Remove(route.ElementAt(0).Length - 1); //WHY DOES NOT WORK?
 
         //Debug.Log("Start Coord from currentRoute =" + _startCoord);
         //Debug.Log("Start Dir from currentRoute =" + _startDir);
 
-        return new string[] { _startCoord, _startDir.ToString() };
+        return new List<string> { _startCoord, _startDir.ToString() };
     }
+
+    
+    private List<string> importRoutes(string fileName)
+    {
+        List<string> txtImport = new List<string>(System.IO.File.ReadLines(routeImportPath + fileName));
+
+        return txtImport;
+    }
+
+    private void SpawnLine(List<string> route)
+    {
+        GameObject newLineGen = Instantiate(routeIndicatorPrefab);
+        LineRenderer lRend = newLineGen.GetComponent<LineRenderer>();
+
+        List<string> lineToDraw = new List<string> (route); //remove
+        lineToDraw.RemoveAt(0);
+        lRend.positionCount = lineToDraw.Count();    //set length of line renderer to the number of coordinates on the path 
+
+        for (int i = 0; i < lineToDraw.Count(); i++)
+        {
+            string[] _coord = lineToDraw[i].Split(char.Parse(coordSeparator));
+            Debug.Log("Draw at (" + string.Join(", ", _coord) + ")");
+            lRend.SetPosition(i, new Vector3(float.Parse(_coord[0]) * gameManager.blockSize, 0.01f, float.Parse(_coord[1]) * gameManager.blockSize));
+        }
+
+    }
+
+    //private string[] getRouteStartOld (string[] route)
+    //{
+    //    char _startDir = route[0][route[0].Length - 1];    //direcion is the last character
+    //    string _startCoord = route[0].Remove(route[0].Length - 1);  //coord is route[0] minus last character
+
+    //    //Debug.Log("Start Coord from currentRoute =" + _startCoord);
+    //    //Debug.Log("Start Dir from currentRoute =" + _startDir);
+
+    //    return new string[] { _startCoord, _startDir.ToString() };
+    //}
 }

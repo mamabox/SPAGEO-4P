@@ -258,6 +258,7 @@ MonoBehaviour:
   trackMovementPath: 
   keyboardShortcutsEnabled: 1
   validationCheck: 0
+  routeSeparator: ','
 --- !u!4 &96087575
 Transform:
   m_ObjectHideFlags: 0
@@ -324,11 +325,27 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1194fa90e0f4a48df96f0eaa1a47f554, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  routeIndicatorPrefab: {fileID: 7381660698562088554, guid: 1e7804160c06a40fe974549a71197407,
+    type: 3}
+  checkpointMarkPrefab: {fileID: 916994846313444454, guid: f525c34b39ec247afba8ebf061b0388a,
+    type: 3}
   coordSeparator: _
-  currentRoute: []
+  importedRoutes:
+  - 2_4E,2_4,3_4,4_4,4_5,3_5
+  - 1_1N,1_1,5_1,5_5.1_5
+  - 2_4E,2_4,3_4,3_5
+  - 1.5_4E,2_4,3_4
+  - 2_4E,2_4,3_4
+  selectedRoute:
+  - 2_4E
+  - 2_4
+  - 3_4
+  - 4_4
+  - 4_5
+  - 3_5
   routeStart:
-  - 
-  - 
+  - 2_4
+  - E
 --- !u!1 &150440578
 GameObject:
   m_ObjectHideFlags: 0
@@ -644,7 +661,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!120 &346805608
 LineRenderer:
   m_ObjectHideFlags: 0
@@ -685,10 +702,10 @@ LineRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_Positions:
-  - {x: 105, y: 0.5, z: 210}
-  - {x: 105, y: 0.5, z: 105}
-  - {x: 70, y: 0.5, z: 105}
-  - {x: 70, y: 0.5, z: 120}
+  - {x: 105, y: 0.01, z: 210}
+  - {x: 105, y: 0.01, z: 105}
+  - {x: 70, y: 0.01, z: 105}
+  - {x: 70, y: 0.01, z: 120}
   m_Parameters:
     serializedVersion: 3
     widthMultiplier: 1
@@ -2560,7 +2577,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!120 &1199294445
 LineRenderer:
   m_ObjectHideFlags: 0
@@ -4221,7 +4238,7 @@ MonoBehaviour:
   horizontalInput: 0
   verticalInput: 0
   tookStep: 0
-  playerFirstMove: 0
+  playerHasMoved: 0
 --- !u!54 &2061365778
 Rigidbody:
   m_ObjectHideFlags: 0

@@ -57,7 +57,7 @@ public class PlayerController : MonoBehaviour
     //private bool firstDirectionNeed = false;
 
     //public bool startInSegment = false;
-    public bool playerFirstMove = false;
+    public bool playerHasMoved = false;
     //public bool cameraTilt = true;
 
     private void Awake()
@@ -76,7 +76,7 @@ public class PlayerController : MonoBehaviour
         routeManager = FindObjectOfType<GameManager>().GetComponent<RouteManager>();
         screenshotManager = FindObjectOfType<GameManager>().GetComponent<ScreenshotManager>();
 
-        intersectionManager.GotoCoord(routeManager.routeStart[0], routeManager.routeStart[1]);
+        intersectionManager.GotoCoord(routeManager.routeStart.ElementAt(0), routeManager.routeStart.ElementAt(1));
 
         //Record start position and rotation
         startPosition = transform.position;
@@ -106,17 +106,21 @@ public class PlayerController : MonoBehaviour
         {
             transform.Translate(Vector3.forward * verticalInput * Time.deltaTime * speed);
             tookStep = false;
-            playerFirstMove = true;
+            playerHasMoved = true;
         }
         else if (verticalInput < 0 && !tookStep)
         {
             tookStep = true;
             playerRb.AddRelativeForce(Vector3.back * backwardsStepForce, ForceMode.Impulse);
-            playerFirstMove = true;
+            playerHasMoved = true;
         }
 
         currentRotation.y += horizontalInput * Time.deltaTime * lookSpeed;
         transform.eulerAngles = new Vector3(0, currentRotation.y, 0);
+
+    }
+    void Update()
+    {
 
         //PLAYER INPUT - KEYBOARD SHORTCUTS
         if (gameManager.keyboardShortcutsEnabled)   // if inputFields are not active
@@ -214,7 +218,7 @@ public class PlayerController : MonoBehaviour
             {
                 //Debug.Log("Session status changed (Started or Ended)");
                 Debug.Log("session Route cleared");
-                gameManager.newAttemp();
+                gameManager.newAttempt();
             }
 
             //Camera switch

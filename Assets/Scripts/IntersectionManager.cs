@@ -199,7 +199,8 @@ public class IntersectionManager : MonoBehaviour
 
         if (sessionRoute.Count == 0)    //if a route has not been started
         {
-            if (playerController.playerFirstMove)    // if the player started in a segment add to route and calculate direction
+            Debug.Log("Session route = 0");
+            if (playerController.playerHasMoved)    // if the player started in a segment add to route and calculate direction
             {
                 sessionRoute.Add(other.GetComponent<Intersection>().coordString);
                 calculateDirection(playerController.lastIntersection, other.GetComponent<Intersection>().coordinates);
@@ -207,6 +208,7 @@ public class IntersectionManager : MonoBehaviour
             }
             else // if the player started at an intersection
             {
+                Debug.Log("Player has not moved yet");
                 sessionRoute.Add(other.GetComponent<Intersection>().coordString); //add to route but do not calculate direction
             }
 
