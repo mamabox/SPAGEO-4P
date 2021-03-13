@@ -217,6 +217,7 @@ GameObject:
   - component: {fileID: 96087576}
   - component: {fileID: 96087578}
   - component: {fileID: 96087577}
+  - component: {fileID: 96087579}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: GameController
@@ -259,6 +260,7 @@ MonoBehaviour:
   keyboardShortcutsEnabled: 1
   validationCheck: 0
   routeSeparator: ','
+  selectedSequence: 0
 --- !u!4 &96087575
 Transform:
   m_ObjectHideFlags: 0
@@ -327,8 +329,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   routeIndicatorPrefab: {fileID: 7381660698562088554, guid: 1e7804160c06a40fe974549a71197407,
     type: 3}
-  checkpointMarkPrefab: {fileID: 916994846313444454, guid: f525c34b39ec247afba8ebf061b0388a,
-    type: 3}
   coordSeparator: _
   importedRoutes:
   - 2_4E,2_4,3_4,4_4,4_5,3_5
@@ -336,6 +336,11 @@ MonoBehaviour:
   - 2_4E,2_4,3_4,3_5
   - 1.5_4E,2_4,3_4
   - 2_4E,2_4,3_4
+  routesS0:
+  - 3.5_5,5.5_5,6.5_5,6_5.5
+  - 3_5E
+  - 6_6,1_6,1_4,1.5_4
+  checkpointsText: []
   selectedRoute:
   - 2_4E
   - 2_4
@@ -346,6 +351,20 @@ MonoBehaviour:
   routeStart:
   - 2_4
   - E
+--- !u!114 &96087579
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 96087573}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a91c81127890942ea89a21f5b8c02d7c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  checkpointPrefab: {fileID: 916994846313444454, guid: f525c34b39ec247afba8ebf061b0388a,
+    type: 3}
 --- !u!1 &150440578
 GameObject:
   m_ObjectHideFlags: 0
@@ -773,7 +792,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 11
+  m_RootOrder: 10
   m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
 --- !u!1 &352644557
 GameObject:
@@ -2689,7 +2708,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 10
+  m_RootOrder: 9
   m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
 --- !u!1 &1299385473
 GameObject:
@@ -3778,36 +3797,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1525488340}
   m_CullTransparentMesh: 0
---- !u!1 &1584062975
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1584062976}
-  m_Layer: 0
-  m_Name: LineManager
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1584062976
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1584062975}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_RootOrder: 9
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1598288833
 GameObject:
   m_ObjectHideFlags: 0

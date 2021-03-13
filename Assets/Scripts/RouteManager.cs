@@ -7,9 +7,10 @@ using System.IO;
 public class RouteManager : MonoBehaviour
 {
     public GameObject routeIndicatorPrefab;
-    public GameObject checkpointMarkPrefab;
+    
     private IntersectionManager intersectionManager;
     private GameManager gameManager;
+    private CheckpointManager checkpointManager;
 
     public string coordSeparator = "_"; //Should be CHAR
 
@@ -18,6 +19,8 @@ public class RouteManager : MonoBehaviour
     private List<string> route1 = new List<string> { "2_4E", "2_4", "3_4", "4_4", "4_5", "3_5" }; // Start point + direction, route coodirnates
     private List<string> route2 = new List<string> { "2_4E", "2_4", "3_4" };
     public List<string> importedRoutes;
+    public List<string> routesS0;
+    public List<string> checkpointsText;
 
     public List<string> selectedRoute;
     public List<string> routeStart;
@@ -30,23 +33,55 @@ public class RouteManager : MonoBehaviour
     {
         gameManager = GetComponent<GameManager>();
         intersectionManager = GetComponent<IntersectionManager>();
-
+        checkpointManager = GetComponent<CheckpointManager>();
+    
         routeImportPath = Path.Combine(Directory.GetCurrentDirectory(), "Assets/Media/Text/");
 
-        importedRoutes = importRoutes("routes.txt");
-        //selectedRoute = route2;//for testing, chooses a route maually
-        //Debug.Log("Checking selectedRoute: " + string.Join(gameManager.routeSeparator, selectedRoute));
-        selectedRoute = importedRoutes.ElementAt(0).Split(',').ToList();  //for testing, chooses a route
-        //Debug.Log("Checking selectedRoute (from Import): " + string.Join(gameManager.routeSeparator, selectedRoute));
+        ImportAllText();
+
+        selectedRoute = importedRoutes.ElementAt(0).Split(',').ToList();  //for testing, manual route test
+        
 
         routeStart = getRouteStart(selectedRoute);
-        SpawnLine(selectedRoute);
+
+        if (gameManager.selectedSequence == 0)
+        {
+            Sequence0();
+        }
+
+        if (gameManager.selectedSequence == 2)
+        {
+            Sequence2();
+        }
+
+
+        //SpawnLine(selectedRoute);
     }
 
     // Update is called once per frame
     void Update()
     {
 
+    }
+
+    private void ImportAllText()
+    {
+        importedRoutes = importText("routes.txt");
+        routesS0 = importText("S0.txt");
+        checkpointsText = importText("checkpointstext.txt");
+    }
+
+    private void Sequence0()
+    {
+        SpawnLine(routesS0.ElementAt(2).Split(',').ToList());       //Draw a line with the coordinates from line 2 in text file
+        checkpointManager.GenerateCheckpoints(routesS0.ElementAt(0).Split(',').ToList()); //Generate Checkpoints from coordinates from line 1
+    }
+
+    private void Sequence2()
+    {
+        List<string> lineToDraw = new List<string>(selectedRoute);
+        lineToDraw.RemoveAt(0); //Remove the start coordiante
+        SpawnLine(lineToDraw);
     }
 
     public ValidationInfo validatePath(List<string> myRoute)
@@ -104,7 +139,6 @@ public class RouteManager : MonoBehaviour
             {
                 if (correctRoute.Count() >= myRoute.Count()) // myRoute is not longer than the correct route
                 {
-
                     if (myRoute.ElementAt(i) != correctRoute.ElementAt(i))
                     {
                         validationInfo.errorAt = i + 1;
@@ -113,15 +147,13 @@ public class RouteManager : MonoBehaviour
                     }
                     else
                     {
-                        validationInfo.errorAt = 0;
-                        
+                        validationInfo.errorAt = 0;   
                     }
                 }
                 else
                 {
                     validationInfo.errorAt = correctRoute.Count()+1;
                 }
-
             }
         }
 
@@ -144,7 +176,7 @@ public class RouteManager : MonoBehaviour
     private List<string> getRouteStart(List<string> route) // returns the first 
     {
 
-        Debug.Log("Route count (getRouteStart)= " + selectedRoute.Count());
+        //Debug.Log("Route count (getRouteStart)= " + selectedRoute.Count());
         //char _startDir = route[0][route[0].Length - 1];    //direcion is the last character of the last coordinate
         char _startDir = route.ElementAt(0).Last();     //direcion is the last character of the last coordinate
         string _startCoord = route[0].Remove(route[0].Length - 1);  //coord is route[0] minus last character
@@ -156,10 +188,10 @@ public class RouteManager : MonoBehaviour
         return new List<string> { _startCoord, _startDir.ToString() };
     }
 
-    
-    private List<string> importRoutes(string fileName)
+    //IMPORTS TEXT FROM A .TXT FILE AND RETURNS EACH LINE AS A STRING
+    private List<string> importText(string fileName)    
     {
-        List<string> txtImport = new List<string>(System.IO.File.ReadLines(routeImportPath + fileName));
+        List<string> txtImport = new List<string>(System.IO.File.ReadAllLines(routeImportPath + fileName));
 
         return txtImport;
     }
@@ -169,18 +201,31 @@ public class RouteManager : MonoBehaviour
         GameObject newLineGen = Instantiate(routeIndicatorPrefab);
         LineRenderer lRend = newLineGen.GetComponent<LineRenderer>();
 
-        List<string> lineToDraw = new List<string> (route); //remove
-        lineToDraw.RemoveAt(0);
+        List<string> lineToDraw = new List<string> (route); 
+        //lineToDraw.RemoveAt(0); //remove the starting position
         lRend.positionCount = lineToDraw.Count();    //set length of line renderer to the number of coordinates on the path 
 
         for (int i = 0; i < lineToDraw.Count(); i++)
         {
             string[] _coord = lineToDraw[i].Split(char.Parse(coordSeparator));
-            Debug.Log("Draw at (" + string.Join(", ", _coord) + ")");
+            //Debug.Log("Draw at (" + string.Join(", ", _coord) + ")");
             lRend.SetPosition(i, new Vector3(float.Parse(_coord[0]) * gameManager.blockSize, 0.01f, float.Parse(_coord[1]) * gameManager.blockSize));
         }
 
     }
+
+    //private void GenerateCheckpoints(List<string> checkpoints)
+    //{
+    //    string[] coordArray;
+    //    for (int i = 0; i < checkpoints.Count(); i++)
+    //    {
+    //        coordArray = checkpoints[i].Split(char.Parse(coordSeparator));      //stores the coordinates x and y in an array
+    //        //Debug.Log("Generating checkpoint at (" + coordArray[0] + coordSeparator + coordArray[1]);
+    //        var newCheckpoint = Instantiate(checkpointPrefab , new Vector3(float.Parse(coordArray[0]) * gameManager.blockSize, 0, float.Parse(coordArray[1]) * gameManager.blockSize), checkpointPrefab.transform.rotation);    //instantiate the checkpoint
+    //        newCheckpoint.GetComponent<Checkpoint>().coordString = checkpoints[i];  //store the coordinates as a string in the instance
+    //        newCheckpoint.GetComponent<Checkpoint>().checkpointID = i+1;    //stores the checkpoitn number in the instance
+    //    }
+    //}
 
     //private string[] getRouteStartOld (string[] route)
     //{

@@ -47,6 +47,8 @@ public class GameManager : MonoBehaviour
 
     public string routeSeparator = ",";    //UI display only
 
+    public int selectedSequence = 0;
+
     // Start is called before the first frame update
     void Start()
     {

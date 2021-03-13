@@ -25,8 +25,8 @@ public class PlayerController : MonoBehaviour
     //public string screenshotPath = Path.Combine(Directory.GetCurrentDirectory(), "Exports/Screenshots/");
     //public string trackMovementPath = Path.Combine(Directory.GetCurrentDirectory(), "Exports/TrackMovements/");
 
-    private readonly int xRange = 350; // Ground plane size (x-axis) * 10
-    private readonly int yRange = 350; // Ground plane size (y-axis) * 10
+    //private readonly int xRange = 350; // Ground plane size (x-axis) * 10
+    //private readonly int yRange = 350; // Ground plane size (y-axis) * 10
 
     private Camera playerCamera; //Needed?
     private Rigidbody playerRb;
@@ -34,6 +34,7 @@ public class PlayerController : MonoBehaviour
     private IntersectionManager intersectionManager;
     private RouteManager routeManager;
     private ScreenshotManager screenshotManager;
+    private CheckpointManager checkpointManager;
 
 
     public Vector3 startPosition; //Used to reset to initial position
@@ -75,6 +76,7 @@ public class PlayerController : MonoBehaviour
         intersectionManager = FindObjectOfType<GameManager>().GetComponent<IntersectionManager>();
         routeManager = FindObjectOfType<GameManager>().GetComponent<RouteManager>();
         screenshotManager = FindObjectOfType<GameManager>().GetComponent<ScreenshotManager>();
+        checkpointManager = FindObjectOfType<GameManager>().GetComponent<CheckpointManager>();
 
         intersectionManager.GotoCoord(routeManager.routeStart.ElementAt(0), routeManager.routeStart.ElementAt(1));
 
@@ -232,15 +234,30 @@ public class PlayerController : MonoBehaviour
     // WHEN PLAYER ENTERS AN INTERSECTION
     private void OnTriggerEnter(Collider other)
     {
-        Debug.Log("ENTER (" + other.GetComponent<Intersection>().coordString + ")");
-        intersectionManager.OnIntersectionEnter(other);
+        if (other.tag == "Intersection")
+        {
+            Debug.Log("Intersection IN (" + other.GetComponent<Intersection>().coordString + ")");
+            intersectionManager.OnIntersectionEnter(other);
+        } else if (other.tag == "Checkpoint")
+        {
+            Debug.Log("Checkpoint IN (" + other.GetComponent<Checkpoint>().coordString + ")");
+            checkpointManager.OnCheckpointEnter(other);
+        }
+        
     }
 
     // WHEN PLAYER LEAVES AN INTERSECTION
     private void OnTriggerExit(Collider other)
     {
-        Debug.Log("EXIT (" + other.GetComponent<Intersection>().coordString + ")");
-        intersectionManager.OnIntersectionExit(other);
+        if (other.tag == "Intersection")
+        {
+
+            Debug.Log("Intersection OUT (" + other.GetComponent<Intersection>().coordString + ")");
+            intersectionManager.OnIntersectionExit(other);
+        } else if (other.tag == "Checkpoint")
+        {
+            Debug.Log("Checkpoint OUT (" + other.GetComponent<Checkpoint>().coordString + ")");
+        }
     }
 
 

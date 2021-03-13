@@ -51,7 +51,7 @@ public class IntersectionManager : MonoBehaviour
         {
             for (int j = -4; j <= -1; j++)
             {
-                addPrefab(i, j);
+                AddPrefab(i, j);
             }
         }
 
@@ -60,7 +60,7 @@ public class IntersectionManager : MonoBehaviour
         {
             for (int j = 0; j <= 3; j++)
             {
-                addPrefab(i, j);
+                AddPrefab(i, j);
             }
         }
         // X = 0 to 7, Y = 4 to 7
@@ -68,13 +68,13 @@ public class IntersectionManager : MonoBehaviour
         {
             for (int j = 4; j <= 7; j++)
             {
-                addPrefab(i, j);
+                AddPrefab(i, j);
             }
         }
         //Debug.Log(string.Join(", ", from coord in validCoord select coord)); // Debug array in one line (could use coord.attribute)
     }
 
-    public void addPrefab(int x, int z)
+    public void AddPrefab(int x, int z)
     {
         Instantiate(intersectionPrefab, new Vector3(x * gameManager.blockSize, 1, z * gameManager.blockSize), intersectionPrefab.transform.rotation);
         validCoord.Add(x + routeManager.coordSeparator + z);    //add the prefab's coordinate to the list of valid coordinates
@@ -199,7 +199,7 @@ public class IntersectionManager : MonoBehaviour
 
         if (sessionRoute.Count == 0)    //if a route has not been started
         {
-            Debug.Log("Session route = 0");
+            //Debug.Log("Session route = 0");
             if (playerController.playerHasMoved)    // if the player started in a segment add to route and calculate direction
             {
                 sessionRoute.Add(other.GetComponent<Intersection>().coordString);
@@ -208,7 +208,7 @@ public class IntersectionManager : MonoBehaviour
             }
             else // if the player started at an intersection
             {
-                Debug.Log("Player has not moved yet");
+                //Debug.Log("Player has not moved yet");
                 sessionRoute.Add(other.GetComponent<Intersection>().coordString); //add to route but do not calculate direction
             }
 
