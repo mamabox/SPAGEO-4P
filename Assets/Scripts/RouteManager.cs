@@ -20,12 +20,12 @@ public class RouteManager : MonoBehaviour
     private List<string> route2 = new List<string> { "2_4E", "2_4", "3_4" };
     public List<string> importedRoutes;
     public List<string> routesS0;
-    public List<string> checkpointsText;
+    
 
     public List<string> selectedRoute;
     public List<string> routeStart;
     public ValidationInfo validationInfo = new ValidationInfo();
-    private string routeImportPath;
+    private string importPath;
 
     [ContextMenu("Route Manager")]
     // Start is called before the first frame update
@@ -35,7 +35,7 @@ public class RouteManager : MonoBehaviour
         intersectionManager = GetComponent<IntersectionManager>();
         checkpointManager = GetComponent<CheckpointManager>();
     
-        routeImportPath = Path.Combine(Directory.GetCurrentDirectory(), "Assets/Media/Text/");
+        importPath = Path.Combine(Directory.GetCurrentDirectory(), "Assets/Media/Text/");
 
         ImportAllText();
 
@@ -66,15 +66,16 @@ public class RouteManager : MonoBehaviour
 
     private void ImportAllText()
     {
-        importedRoutes = importText("routes.txt");
-        routesS0 = importText("S0.txt");
-        checkpointsText = importText("checkpointstext.txt");
+        importedRoutes = ImportText("routes.txt");
+        routesS0 = ImportText("S0.txt");
+        checkpointManager.checkpointsText = ImportText("checkpointstext.txt");
     }
 
     private void Sequence0()
     {
         SpawnLine(routesS0.ElementAt(2).Split(',').ToList());       //Draw a line with the coordinates from line 2 in text file
         checkpointManager.GenerateCheckpoints(routesS0.ElementAt(0).Split(',').ToList()); //Generate Checkpoints from coordinates from line 1
+        intersectionManager.GotoCoord("3_5", "E");
     }
 
     private void Sequence2()
@@ -82,6 +83,7 @@ public class RouteManager : MonoBehaviour
         List<string> lineToDraw = new List<string>(selectedRoute);
         lineToDraw.RemoveAt(0); //Remove the start coordiante
         SpawnLine(lineToDraw);
+        
     }
 
     public ValidationInfo validatePath(List<string> myRoute)
@@ -189,9 +191,9 @@ public class RouteManager : MonoBehaviour
     }
 
     //IMPORTS TEXT FROM A .TXT FILE AND RETURNS EACH LINE AS A STRING
-    private List<string> importText(string fileName)    
+    public List<string> ImportText(string fileName)    
     {
-        List<string> txtImport = new List<string>(System.IO.File.ReadAllLines(routeImportPath + fileName));
+        List<string> txtImport = new List<string>(System.IO.File.ReadAllLines(importPath + fileName));
 
         return txtImport;
     }

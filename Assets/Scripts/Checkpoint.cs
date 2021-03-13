@@ -9,14 +9,16 @@ public class Checkpoint : MonoBehaviour
 
     public string coordString;  // Intersection's coordinate in "x.y" format
     //public float[] coordinates;  // Intersection's coordinate in [x,y] format
-    public int checkpointID;
+    public int ID;
+    public bool isCollected;
 
     // Start is called before the first frame update
-    void Awake()
+    void Start()
     {
         gameManager = FindObjectOfType<GameManager>().GetComponent<GameManager>();
         routeManager = FindObjectOfType<GameManager>().GetComponent<RouteManager>();
 
+        isCollected = false;
     }
 
     // Update is called once per frame

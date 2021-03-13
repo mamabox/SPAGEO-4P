@@ -22,7 +22,7 @@ public class Intersection : MonoBehaviour
         coordString = coordinates[0] + routeManager.coordSeparator + coordinates[1];
     }
 
-    // Update is called once per frame
+    // Update is callAed once per frame
     void Update()
     {
 
